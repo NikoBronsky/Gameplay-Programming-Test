@@ -8,6 +8,7 @@
 
 class UCameraComponent;
 class APTGrappleLine;
+class APTHook;
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -24,7 +25,7 @@ protected:
 	virtual void BeginPlay() override;
 	void MovingToPoint(AActor* Target);
 	void ResetMoving();
-	void BuildGrapple();
+	void BuildHookAndGrapple(FHitResult Hit);
 
 public:	
 	// Called every frame
@@ -44,4 +45,5 @@ private:
 	AActor* HookTarget;
 
 	APTGrappleLine* GrappleLine;
+	APTHook* HookMesh;
 };

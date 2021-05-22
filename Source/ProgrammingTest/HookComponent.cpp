@@ -5,6 +5,8 @@
 #include "Camera/CameraComponent.h"
 #include "PTGrappleLine.h"
 #include "CableComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "PTHook.h"
 
 // Sets default values for this component's properties
 UHookComponent::UHookComponent()
@@ -39,11 +41,15 @@ void UHookComponent::ResetMoving()
 
 }
 
-void UHookComponent::BuildGrapple()
+void UHookComponent::BuildHookAndGrapple(FHitResult Hit)
 {
+	FRotator HookRotation = UKismetMathLibrary::MakeRotationFromAxes(Hit.ImpactNormal, FVector (0,0,0), FVector (0,0,0));
+	HookMesh = GetWorld()->SpawnActor<APTHook>(Hit.ImpactPoint, HookRotation);
+	HookMesh->AttachToComponent(Hit.GetComponent(), FAttachmentTransformRules::KeepWorldTransform);
 	GrappleLine = GetWorld()->SpawnActor<APTGrappleLine>(this->GetComponentLocation(), GetComponentRotation());
 	GrappleLine->AttachToComponent(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-	GrappleLine->CableComponent->SetAttachEndTo(HookTarget, NAME_None);
+	GrappleLine->CableComponent->EndLocation.X = 15;
+	GrappleLine->CableComponent->SetAttachEndTo(HookMesh, NAME_None, "Socket");
 }
 
 // Called every frame
@@ -72,7 +78,7 @@ void UHookComponent::TryToGrab(UCameraComponent* Camera)
 	if (bSuccess)
 	{
 		HookTarget = Hit.GetActor();
-		BuildGrapple();
+		BuildHookAndGrapple(Hit);
 		MovingToPoint(HookTarget);
 	}
 }

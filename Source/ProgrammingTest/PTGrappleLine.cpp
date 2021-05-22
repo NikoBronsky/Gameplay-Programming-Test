@@ -2,3 +2,8 @@
 
 
 #include "PTGrappleLine.h"
+
+APTGrappleLine::APTGrappleLine()
+{
+ 
+}

@@ -3,16 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CableActor.h"
-#include "PTGrappleLine.generated.h"
+#include "Engine/StaticMeshActor.h"
+#include "PTHook.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROGRAMMINGTEST_API APTGrappleLine : public ACableActor
+class PROGRAMMINGTEST_API APTHook : public AStaticMeshActor
 {
 	GENERATED_BODY()
 
-		APTGrappleLine();
+		APTHook();
 };
