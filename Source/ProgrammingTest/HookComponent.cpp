@@ -25,6 +25,18 @@ void UHookComponent::BeginPlay()
 }
 
 
+void UHookComponent::MovingToPoint(AActor* Target)
+{
+	if (Target != nullptr)
+	{
+	}
+}
+
+void UHookComponent::ResetMoving()
+{
+
+}
+
 // Called every frame
 void UHookComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -33,12 +45,24 @@ void UHookComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 	// ...
 }
 
-void UHookComponent::TraceForHook(bool& bSuccess, FHitResult& Hit, UCameraComponent* Camera, float TraceRange)
+void UHookComponent::TraceForHook(bool& bSuccess, FHitResult& Hit, UCameraComponent* Camera)
 {
 	if (Camera != nullptr)
 	{
 		FVector StartPosition = Camera->GetComponentLocation();
 		FVector EndPosition = Camera->GetForwardVector() * TraceRange + StartPosition;
 		bSuccess = GetWorld()->LineTraceSingleByChannel(Hit, StartPosition, EndPosition, ECC_Visibility);
+	}
+}
+
+void UHookComponent::TryToGrab(UCameraComponent* Camera)
+{
+	bool bSuccess;
+	FHitResult Hit;
+	TraceForHook(bSuccess, Hit, Camera);
+	if (bSuccess)
+	{
+		HookTarget = Hit.GetActor();
+		MovingToPoint(HookTarget);
 	}
 }

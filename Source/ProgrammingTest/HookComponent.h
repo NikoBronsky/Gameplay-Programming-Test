@@ -21,12 +21,23 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	void MovingToPoint(AActor* Target);
+	void ResetMoving();
 
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-
 	UFUNCTION(BlueprintCallable, Category = "Hook")
-	void TraceForHook(bool& bSuccess, FHitResult& Hit, UCameraComponent* Camera, float TraceRange);
+	void TryToGrab(UCameraComponent* Camera);
+
+	void TraceForHook(bool& bSuccess, FHitResult& Hit, UCameraComponent* Camera);
+
+
+private:
+
+	UPROPERTY(EditDefaultsOnly, Category = "Hook")
+	float TraceRange = 1500;
+
+	AActor* HookTarget;
 };
