@@ -7,6 +7,7 @@
 #include "HookComponent.generated.h"
 
 class UCameraComponent;
+class APTGrappleLine;
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -23,6 +24,7 @@ protected:
 	virtual void BeginPlay() override;
 	void MovingToPoint(AActor* Target);
 	void ResetMoving();
+	void BuildGrapple();
 
 public:	
 	// Called every frame
@@ -40,4 +42,6 @@ private:
 	float TraceRange = 1500;
 
 	AActor* HookTarget;
+
+	APTGrappleLine* GrappleLine;
 };

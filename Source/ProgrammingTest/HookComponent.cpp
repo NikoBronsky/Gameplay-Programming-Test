@@ -3,6 +3,8 @@
 
 #include "HookComponent.h"
 #include "Camera/CameraComponent.h"
+#include "PTGrappleLine.h"
+#include "CableComponent.h"
 
 // Sets default values for this component's properties
 UHookComponent::UHookComponent()
@@ -37,6 +39,13 @@ void UHookComponent::ResetMoving()
 
 }
 
+void UHookComponent::BuildGrapple()
+{
+	GrappleLine = GetWorld()->SpawnActor<APTGrappleLine>(this->GetComponentLocation(), GetComponentRotation());
+	GrappleLine->AttachToComponent(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	GrappleLine->CableComponent->SetAttachEndTo(HookTarget, NAME_None);
+}
+
 // Called every frame
 void UHookComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -63,6 +72,7 @@ void UHookComponent::TryToGrab(UCameraComponent* Camera)
 	if (bSuccess)
 	{
 		HookTarget = Hit.GetActor();
+		BuildGrapple();
 		MovingToPoint(HookTarget);
 	}
 }
