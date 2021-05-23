@@ -36,7 +36,7 @@ void UHookComponent::MovingToPoint(AActor* Target)
 	}
 }
 
-void UHookComponent::ResetMoving()
+void UHookComponent::CancelMoving()
 {
 
 }
@@ -50,6 +50,20 @@ void UHookComponent::BuildHookAndGrapple(FHitResult Hit)
 	GrappleLine->AttachToComponent(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 	GrappleLine->CableComponent->EndLocation.X = 15;
 	GrappleLine->CableComponent->SetAttachEndTo(HookMesh, NAME_None, "Socket");
+}
+
+void UHookComponent::Reset()
+{
+	if (GrappleLine != nullptr)
+	{
+		GrappleLine->Destroy();
+	}
+	if (HookMesh != nullptr)
+	{
+		HookMesh->Destroy();
+	}
+	
+	HookTarget = nullptr;
 }
 
 // Called every frame
@@ -74,11 +88,22 @@ void UHookComponent::TryToGrab(UCameraComponent* Camera)
 {
 	bool bSuccess;
 	FHitResult Hit;
+	RemoveGrapple();
+
 	TraceForHook(bSuccess, Hit, Camera);
 	if (bSuccess)
 	{
 		HookTarget = Hit.GetActor();
 		BuildHookAndGrapple(Hit);
 		MovingToPoint(HookTarget);
+	}
+}
+
+void UHookComponent::RemoveGrapple()
+{
+	if (HookTarget != nullptr || GrappleLine != nullptr || HookMesh != nullptr)
+	{
+		CancelMoving();
+		Reset();
 	}
 }

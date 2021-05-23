@@ -24,8 +24,9 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	void MovingToPoint(AActor* Target);
-	void ResetMoving();
+	void CancelMoving();
 	void BuildHookAndGrapple(FHitResult Hit);
+	void Reset();
 
 public:	
 	// Called every frame
@@ -33,6 +34,11 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Hook")
 	void TryToGrab(UCameraComponent* Camera);
+
+	// Cancel Grapple Connection if it exists
+	UFUNCTION(BlueprintCallable, Category = "Hook")
+	void RemoveGrapple();
+	
 
 	void TraceForHook(bool& bSuccess, FHitResult& Hit, UCameraComponent* Camera);
 
