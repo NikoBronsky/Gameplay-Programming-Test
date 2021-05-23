@@ -6,6 +6,7 @@
 #include "PTGrappleLine.h"
 #include "CableComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Components/CapsuleComponent.h"
 #include "PTHook.h"
 
 // Sets default values for this component's properties
@@ -29,16 +30,15 @@ void UHookComponent::BeginPlay()
 }
 
 
-void UHookComponent::MovingToPoint(AActor* Target)
+void UHookComponent::SetGrappleMoving(bool NewState)
 {
-	if (Target != nullptr)
+	UCapsuleComponent* PlayerCapsule;
+	PlayerCapsule = GetOwner()->FindComponentByClass<UCapsuleComponent>();
+	if (PlayerCapsule != nullptr)
 	{
+		PlayerCapsule->SetSimulatePhysics(NewState);
 	}
-}
-
-void UHookComponent::CancelMoving()
-{
-
+	BGrappleMoving = true;
 }
 
 void UHookComponent::BuildHookAndGrapple(FHitResult Hit)
@@ -70,8 +70,15 @@ void UHookComponent::Reset()
 void UHookComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
+	if (HookTarget != nullptr)
+	{
+		UCapsuleComponent* PlayerCapsule;
+		PlayerCapsule = GetOwner()->FindComponentByClass<UCapsuleComponent>();
+		if (PlayerCapsule != nullptr)
+		{
+			PlayerCapsule->AddRadialForce(HookMesh->GetActorLocation(), HookMesh->GetDistanceTo(this->GetOwner()), -GrappleHookStrenght, ERadialImpulseFalloff::RIF_Constant, true);
+		}
+	}
 }
 
 void UHookComponent::TraceForHook(bool& bSuccess, FHitResult& Hit, UCameraComponent* Camera)
@@ -79,7 +86,7 @@ void UHookComponent::TraceForHook(bool& bSuccess, FHitResult& Hit, UCameraCompon
 	if (Camera != nullptr)
 	{
 		FVector StartPosition = Camera->GetComponentLocation();
-		FVector EndPosition = Camera->GetForwardVector() * TraceRange + StartPosition;
+		FVector EndPosition = Camera->GetForwardVector() * HookMaxDistance + StartPosition;
 		bSuccess = GetWorld()->LineTraceSingleByChannel(Hit, StartPosition, EndPosition, ECC_Visibility);
 	}
 }
@@ -95,7 +102,7 @@ void UHookComponent::TryToGrab(UCameraComponent* Camera)
 	{
 		HookTarget = Hit.GetActor();
 		BuildHookAndGrapple(Hit);
-		MovingToPoint(HookTarget);
+		SetGrappleMoving(true);
 	}
 }
 
@@ -103,7 +110,7 @@ void UHookComponent::RemoveGrapple()
 {
 	if (HookTarget != nullptr || GrappleLine != nullptr || HookMesh != nullptr)
 	{
-		CancelMoving();
+		SetGrappleMoving(false);
 		Reset();
 	}
 }

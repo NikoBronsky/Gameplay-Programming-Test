@@ -23,8 +23,7 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-	void MovingToPoint(AActor* Target);
-	void CancelMoving();
+	void SetGrappleMoving(bool NewState);
 	void BuildHookAndGrapple(FHitResult Hit);
 	void Reset();
 
@@ -46,10 +45,14 @@ public:
 private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Hook")
-	float TraceRange = 1500;
+	float HookMaxDistance = 1500;
 
 	AActor* HookTarget;
-
 	APTGrappleLine* GrappleLine;
 	APTHook* HookMesh;
+
+	UPROPERTY(EditAnywhere, Category = "Hook")
+	float GrappleHookStrenght = 2000;
+
+	bool BGrappleMoving;
 };
