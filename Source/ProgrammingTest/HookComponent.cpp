@@ -7,7 +7,9 @@
 #include "CableComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/CapsuleComponent.h"
+#include "PTHookInterface.h"
 #include "PTHook.h"
+#include "GameFramework/Character.h"
 
 // Sets default values for this component's properties
 UHookComponent::UHookComponent()
@@ -28,7 +30,6 @@ void UHookComponent::BeginPlay()
 	// ...
 	
 }
-
 
 void UHookComponent::SetGrappleMoving(bool NewState)
 {
@@ -62,8 +63,16 @@ void UHookComponent::Reset()
 	{
 		HookMesh->Destroy();
 	}
+	if (HookTarget != nullptr)
+	{
+		if (HookTarget->GetClass()->ImplementsInterface(UPTHookInterface::StaticClass()))
+		{
+			IPTHookInterface::Execute_ExecutionDeactivate(HookTarget, Cast<ACharacter>(GetOwner()));
+		}
+		HookTarget = nullptr;
+	}
 	
-	HookTarget = nullptr;
+	
 }
 
 // Called every frame
@@ -77,6 +86,17 @@ void UHookComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 		if (PlayerCapsule != nullptr)
 		{
 			PlayerCapsule->AddRadialForce(HookMesh->GetActorLocation(), HookMesh->GetDistanceTo(this->GetOwner()), -GrappleHookStrenght, ERadialImpulseFalloff::RIF_Constant, true);
+		}
+		if (HookTarget->GetClass()->ImplementsInterface(UPTHookInterface::StaticClass()))
+		{
+			float ActivationDistance = IPTHookInterface::Execute_GetActivationDistance(HookTarget);
+		
+			UE_LOG(LogTemp, Warning, TEXT("Distance is : %f"), HookMesh->GetDistanceTo(GetOwner()));
+ 			if ( ActivationDistance >= HookMesh->GetDistanceTo(GetOwner()))
+ 			{
+				IPTHookInterface::Execute_ExecutionActivate(HookTarget, Cast<ACharacter>(GetOwner()));
+ 			}
+			
 		}
 	}
 }
@@ -103,6 +123,10 @@ void UHookComponent::TryToGrab(UCameraComponent* Camera)
 		HookTarget = Hit.GetActor();
 		BuildHookAndGrapple(Hit);
 		SetGrappleMoving(true);
+		if (HookTarget->GetClass()->ImplementsInterface(UPTHookInterface::StaticClass()))
+		{
+			IPTHookInterface::Execute_AttachPlayer(HookTarget, Cast<ACharacter>(GetOwner()));
+		}
 	}
 }
 

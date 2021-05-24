@@ -9,6 +9,7 @@
 class UCameraComponent;
 class APTGrappleLine;
 class APTHook;
+class IPTHookInterface;
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -37,7 +38,6 @@ public:
 	// Cancel Grapple Connection if it exists
 	UFUNCTION(BlueprintCallable, Category = "Hook")
 	void RemoveGrapple();
-	
 
 	void TraceForHook(bool& bSuccess, FHitResult& Hit, UCameraComponent* Camera);
 
@@ -46,13 +46,12 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Hook")
 	float HookMaxDistance = 1500;
+	UPROPERTY(EditAnywhere, Category = "Hook")
+	float GrappleHookStrenght = 2000;
+	bool BGrappleMoving;
 
 	AActor* HookTarget;
 	APTGrappleLine* GrappleLine;
 	APTHook* HookMesh;
 
-	UPROPERTY(EditAnywhere, Category = "Hook")
-	float GrappleHookStrenght = 2000;
-
-	bool BGrappleMoving;
 };

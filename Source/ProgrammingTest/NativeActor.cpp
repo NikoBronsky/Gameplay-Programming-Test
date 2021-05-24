@@ -31,3 +31,8 @@ void ANativeActor::Report(ACharacter* Character)
 		UE_LOG(LogBlueprintUserMessages, Error, TEXT("%s: argument passed to Report is invalid"), *GetName());
 	}
 }
+
+void ANativeActor::ExecutionActivate_Implementation(ACharacter* Character)
+{
+	Report(Character);
+}

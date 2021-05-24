@@ -5,10 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include <Components/StaticMeshComponent.h>
+#include "PTHookInterface.h"
 #include "NativeActor.generated.h"
 
 UCLASS(NotBlueprintable)
-class PROGRAMMINGTEST_API ANativeActor : public AActor
+class PROGRAMMINGTEST_API ANativeActor : public AActor, public UPTHookInterface
 {
 	GENERATED_BODY()
 	
@@ -20,4 +21,7 @@ public:
 
 protected:
 	void Report(ACharacter* Character);
+
+	/*void ExecutionActivate_Implementation(ACharacter* Character);*/
+
 };
