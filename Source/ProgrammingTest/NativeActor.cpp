@@ -32,7 +32,14 @@ void ANativeActor::Report(ACharacter* Character)
 	}
 }
 
+// My Code below
+
 void ANativeActor::ExecutionActivate_Implementation(ACharacter* Character)
 {
 	Report(Character);
+}
+
+float ANativeActor::GetActivationDistance_Implementation()
+{
+	return 100; // Activation Distance
 }

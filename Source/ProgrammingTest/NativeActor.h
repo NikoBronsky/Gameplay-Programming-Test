@@ -9,7 +9,7 @@
 #include "NativeActor.generated.h"
 
 UCLASS(NotBlueprintable)
-class PROGRAMMINGTEST_API ANativeActor : public AActor, public UPTHookInterface
+class PROGRAMMINGTEST_API ANativeActor : public AActor, public IPTHookInterface
 {
 	GENERATED_BODY()
 	
@@ -22,6 +22,17 @@ public:
 protected:
 	void Report(ACharacter* Character);
 
-	/*void ExecutionActivate_Implementation(ACharacter* Character);*/
+
+public:
+	// My Code Below
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interactions")
+		void ExecutionActivate(ACharacter* Character);
+	virtual void ExecutionActivate_Implementation(ACharacter* Character) override;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interactions")
+		float GetActivationDistance();
+	virtual float GetActivationDistance_Implementation() override;
+
 
 };
