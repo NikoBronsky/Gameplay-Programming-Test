@@ -5,7 +5,7 @@
 
 APTHook::APTHook()
 {
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT(" StaticMesh'/Game/ProgrammingTest/Hook/HookMesh.HookMesh'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("/Game/ProgrammingTest/Hook/HookMesh"));
 	UStaticMesh* Asset = MeshAsset.Object;
 	
 	GetStaticMeshComponent()->SetStaticMesh(Asset);
